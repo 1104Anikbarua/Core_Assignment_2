@@ -29,7 +29,12 @@ namespace Core_Assignment_2.Controllers
 
             IQueryable<InventoryModel> products = _context.Inventories;
 
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrEmpty(categoryFilter))
+            {
+                products = products.Where(p => p.Name.Contains(searchString) && p.Category == categoryFilter);
+            }
+
+            else if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(p => p.Name.Contains(searchString));
             }
