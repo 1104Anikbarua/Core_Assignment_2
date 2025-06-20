@@ -27,17 +27,24 @@ namespace Core_Assignment_2.Controllers
                 .Distinct()
                 .ToListAsync();
 
-            var products = from p in _context.Inventories select p;
+            IQueryable<InventoryModel> products = _context.Inventories;
 
             if (!string.IsNullOrEmpty(searchString))
+            {
                 products = products.Where(p => p.Name.Contains(searchString));
-
-            if (!string.IsNullOrEmpty(categoryFilter))
+            }
+            else if (!string.IsNullOrEmpty(categoryFilter))
+            {
                 products = products.Where(p => p.Category == categoryFilter);
+            }
 
+            // Pass filtered data and category list to view
             ViewBag.Categories = new SelectList(categories);
-            return View(await products.ToListAsync());
+            var productList = await products.ToListAsync();
+
+            return View(productList);
         }
+
 
         public IActionResult Create() => View();
 

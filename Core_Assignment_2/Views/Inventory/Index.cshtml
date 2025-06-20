@@ -4,123 +4,166 @@
 	ViewData["Title"] = "Inventory Management System";
 }
 
-<h2>@ViewData["Title"]</h2>
-<p>
-	<a class="btn btn-primary" asp-action="Create">+ Add Product</a>
-</p>
+<div class="card">
+	<div class="card-body">
+		<h2 class="fw-bold"><i class="bi bi-boxes"></i> @ViewData["Title"]</h2>
+		<p class="my-1">
+			<a class="btn btn-dark fw-bold" asp-action="Create">
+				<i class="bi bi-plus-lg"></i>
+				Add Product
+			</a>
+		</p>
+		@* Search & Filter Start *@
+		<div class="card my-5">
+			<div class="card-body">
+				<form method="get">
+					<div class="row">
+						<div class="col-4">
+							<label class="visually-hidden" for="inlineFormInputGroupUsername">Search</label>
+							<div class="input-group">
+								<div class="input-group-text"><i class="bi bi-search"></i></div>
+								<input type="text" class="form-control" id="inlineFormInputGroupUsername" name="searchString" placeholder="Search by product name..." value="@Context.Request.Query["searchString"]">
+							</div>
+						</div>
+						<div class="col-4">
+							@* <select name="categoryFilter"> *@
+							@* 	<option value="">All Categories</option> *@
+							@* 	@foreach (var category in (SelectList)ViewBag.Categories) *@
+							@* 	{ *@
+							@* 		<option value="@category.Text" *@
+							@* 				selected="@(Context.Request.Query["categoryFilter"] == category.Text ? "selected" : null)"> *@
+							@* 			@category.Text *@
+							@* 		</option> *@
+							@* 	} *@
+							@* </select> *@
+							@* // *@
 
-<form method="get">
-	<input type="text" name="searchString" placeholder="Search by product name..."
-		   value="@Context.Request.Query["searchString"]" />
-	<select name="categoryFilter">
-		<option value="">All Categories</option>
-		@foreach (var category in (SelectList)ViewBag.Categories)
-		{
-			<option value="@category.Text"
-					selected="@(Context.Request.Query["categoryFilter"] == category.Text ? "selected" : null)">
-				@category.Text
-			</option>
-		}
-	</select>
-	<input type="submit" value="Search" class="btn btn-secondary" />
-</form>
+							<label class="visually-hidden" for="specificSizeSelect">Preference</label>
+							<select class="form-select" id="specificSizeSelect" name="categoryFilter">
+								<option value="">All Categories</option>
+								@foreach (var category in (SelectList)ViewBag.Categories)
+								{
+									<option value="@category.Text"
+											selected="@(Context.Request.Query["categoryFilter"] == category.Text ? "selected" : null)">
+										@category.Text
+									</option>
+								}
+							</select>
+						</div>
+						<div class="col-3">
+							<button type="submit" class="btn btn-primary">Search</button>
+						</div>
 
-<table class="table table-bordered table-striped">
-	<thead class="thead-dark">
-		<tr>
-			<th>ID</th>
-			<th>Name</th>
-			<th>Category</th>
-			<th>Price</th>
-			<th>Quantity</th>
-			<th>Status</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>@item.Id</td>
-				<td>@item.Name</td>
-				<td>@item.Category</td>
-				<td>@item.Price.ToString("C")</td>
-				<td>@item.Quantity</td>
-				<td>
-					@if (item.Quantity == 0)
-					{
-						<span class="badge bg-danger">Out of Stock</span>
-					}
-					else if (item.Quantity < 10)
-					{
-						<span class="badge bg-warning text-dark">Low Stock</span>
-					}
-					else
-					{
-						<span class="badge bg-success">In Stock</span>
-					}
-				</td>
-				<td>
-					<a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">View</a>
-					<button type="button" class="btn btn-warning btn-sm edit-btn" data-id="@item.Id">
-						Edit
-					</button>
-					<a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
-@* Modal start here  *@
-<!-- Edit Modal -->
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<form id="editForm">
-			@Html.AntiForgeryToken()
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Edit Product</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<input type="hidden" id="editId" name="Id" />
-
-					<div class="mb-3">
-						<label for="editName" class="form-label">Name</label>
-						<input type="text" class="form-control" id="editName" name="Name" required />
 					</div>
-					<div class="mb-3">
-						<label for="editCategory" class="form-label">Category</label>
-						<input type="text" class="form-control" id="editCategory" name="Category" required />
-					</div>
-					<div class="mb-3">
-						<label for="editPrice" class="form-label">Price</label>
-						<input type="number" class="form-control" id="editPrice" name="Price" required min="0" step="0.01" />
-					</div>
-					<div class="mb-3">
-						<label for="editQuantity" class="form-label">Quantity</label>
-						<input type="number" class="form-control" id="editQuantity" name="Quantity" required min="0" />
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Save changes</button>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-				</div>
+				</form>
 			</div>
-		</form>
+		</div>
+		@* Search & Filter End  *@
+
+		<div class="card">
+			<div class="card-body">
+				<table class="table table-bordered table-striped">
+					<thead class="thead-dark">
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Category</th>
+							<th>Price</th>
+							<th>Quantity</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>@item.Id</td>
+								<td>@item.Name</td>
+								<td>@item.Category</td>
+								<td>@item.Price.ToString("C")</td>
+								<td>@item.Quantity</td>
+								<td>
+									@if (item.Quantity == 0)
+									{
+										<span class="badge bg-danger">Out of Stock</span>
+									}
+									else if (item.Quantity < 10)
+									{
+										<span class="badge bg-warning text-dark">Low Stock</span>
+									}
+									else
+									{
+										<span class="badge bg-success">In Stock</span>
+									}
+								</td>
+								<td>
+									<a class="btn btn-info btn-sm">View</a>
+									<button type="button" class="btn btn-warning btn-sm edit-btn text-white" data-id="@item.Id">
+										<i class="bi bi-pencil-square text-white"></i>
+										Edit
+									</button>
+									<a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">
+										<i class="bi bi-trash"></i>
+										Delete
+									</a>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		@* Modal start here  *@
+
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<form id="editForm">
+					@Html.AntiForgeryToken()
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Edit Product</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<input type="hidden" id="editId" name="Id" />
+
+							<div class="mb-3">
+								<label for="editName" class="form-label">Name</label>
+								<input type="text" class="form-control" id="editName" name="Name" required />
+							</div>
+							<div class="mb-3">
+								<label for="editCategory" class="form-label">Category</label>
+								<input type="text" class="form-control" id="editCategory" name="Category" required />
+							</div>
+							<div class="mb-3">
+								<label for="editPrice" class="form-label">Price</label>
+								<input type="number" class="form-control" id="editPrice" name="Price" required min="0" step="0.01" />
+							</div>
+							<div class="mb-3">
+								<label for="editQuantity" class="form-label">Quantity</label>
+								<input type="number" class="form-control" id="editQuantity" name="Quantity" required min="0" />
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Save changes</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>
 
 
 @* Modal End here  *@
 
-@* Scripts  *@
-<!-- All your HTML and table rendering code -->
+@* Scripts Start  *@
 @section Scripts {
 	<script>
 		$(document).ready(function () {
-			// Open modal and load product data
+
 			$('.edit-btn').click(function () {
 				var id = $(this).data('id');
 
@@ -136,7 +179,7 @@
 				});
 			});
 
-			// Submit modal form with updated data
+
 			$('#editForm').submit(function (e) {
 				e.preventDefault();
 
@@ -168,4 +211,4 @@
 }
 
 
-@* Scripts  *@
+@* Scripts End *@
