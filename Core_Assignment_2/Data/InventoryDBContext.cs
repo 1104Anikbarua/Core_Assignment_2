@@ -7,6 +7,6 @@ namespace Core_Assignment_2.Data
     {
         public InventoryDBContext(DbContextOptions<InventoryDBContext> options) : base(options) { }
 
-        public DbSet<Inventory> Inventories { get; set; }
+        public DbSet<InventoryModel> Inventories { get; set; }
     }
 }

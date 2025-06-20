@@ -2,7 +2,7 @@
 
 namespace Core_Assignment_2.Models
 {
-    public class Inventory
+    public class InventoryModel
     {
         public int Id { get; set; }
 

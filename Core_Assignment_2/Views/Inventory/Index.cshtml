@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Core_Assignment_2.Models.InventoryModel>
+
+@{
+    ViewData["Title"] = "Inventory Management System";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    <a class="btn btn-primary" asp-action="Create">+ Add Product</a>
+</p>
+
+<form method="get">
+    <input type="text" name="searchString" placeholder="Search by product name..."
+           value="@Context.Request.Query["searchString"]" />
+    <select name="categoryFilter">
+        <option value="">All Categories</option>
+        @foreach (var category in (SelectList)ViewBag.Categories)
+        {
+            <option value="@category.Text"
+                    selected="@(Context.Request.Query["categoryFilter"] == category.Text ? "selected" : null)">
+                @category.Text
+            </option>
+        }
+    </select>
+    <input type="submit" value="Search" class="btn btn-secondary" />
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.Category</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.Quantity</td>
+                <td>
+                    @if (item.Quantity == 0)
+                    {
+                        <span class="badge bg-danger">Out of Stock</span>
+                    }
+                    else if (item.Quantity < 10)
+                    {
+                        <span class="badge bg-warning text-dark">Low Stock</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">In Stock</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">View</a>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
