@@ -54,15 +54,18 @@ namespace Core_Assignment_2.Controllers
             return View(product);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
             var product = await _context.Inventories.FindAsync(id);
             if (product == null) return NotFound();
 
+            // If AJAX request, return JSON
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return Json(product);
+
             return View(product);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
